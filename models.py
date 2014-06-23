@@ -32,7 +32,11 @@ class Meter(MySQLModel):
 	firm = CharField()
 	model = CharField()
 	met_id = CharField()
-	record = ForeignKeyField(Record, related_name='records', null=True)
+	#record = KeyField(Record, related_name='records', null=True)
+
+class RecordInMeter(MySQLModel):
+	meter = ForeignKeyField(Meter)
+	record = ForeignKeyField(Record)
 
 class Add(MySQLModel):
 	message = TextField()

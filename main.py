@@ -113,6 +113,7 @@ class DispForm(QtGui.QWidget):
 		self.openchatButton.clicked.connect(self.openChatForm)
 		self.openmapButton.clicked.connect(self.openMapForm)
 		self.showmeterButton.clicked.connect(self.showMeter)
+		self.openListButton.clicked.connect(self.openList)
 		
 	def initUI(self):
 		uic.loadUi("ui/dispform.ui", self)
@@ -129,6 +130,18 @@ class DispForm(QtGui.QWidget):
 		self.dateLabel.hide()
 		self.nameLabel.hide()
 		self.nameHint.hide()
+		self.openListButton.hide()
+
+	def openList(self):
+		self.records_list = QtGui.QListWidget()
+		self.records_list.show()
+		self.records_list.setGeometry(40, 120, 271, 251)
+		centerOnScreen(self.records_list)
+		self.records_list.setWindowTitle(u'Журнал')
+		meter = models.Meter.get(models.Meter.user == self.userFinded)
+		records = models.RecordInMeter.select().where(models.RecordInMeter.meter == meter)
+		for record in records:
+			self.records_list.addItem(u'Показания: %s (%s)'%(record.record.data, record.record.date.__format__("%H:%M %d.%m.%Y")))
 
 	def openRequestForm(self):
 		requests = models.Add.select().where(models.Add.status == 0)
@@ -164,6 +177,7 @@ class DispForm(QtGui.QWidget):
 			self.dateLabel.hide()
 			self.nameLabel.hide()
 			self.nameHint.hide()
+			self.openListButton.hide()
 			try:
 				meter = models.Meter.get(models.Meter.adress == data)
 			except:
@@ -181,6 +195,7 @@ class DispForm(QtGui.QWidget):
 			self.dateLabel.hide()
 			self.nameLabel.hide()
 			self.nameHint.hide()
+			self.openListButton.hide()
 
 			try:
 				meter = models.Meter.get(models.Meter.user == int(data))
@@ -192,11 +207,14 @@ class DispForm(QtGui.QWidget):
 				self.dataErrorHint.setText(u'Нет данных, удовлетворяющих запрос')
 
 		try:
+			records = list(models.RecordInMeter.select().where(models.RecordInMeter.meter == meter))
+			self.userFinded = meter.user.id
+
 			self.adressLabel.setText(meter.adress)
 			self.loginLabel.setText(meter.user.login)
-			self.dataLabel.setText(str(meter.record.data))
+			self.dataLabel.setText(str(records[-1].record.data))
 			self.nameLabel.setText(meter.user.name + ' ' + meter.user.sername)
-			self.dateLabel.setText(str(meter.record.date.__format__("%H:%M %d.%m.%Y")))
+			self.dateLabel.setText(str(records[-1].record.date.__format__("%H:%M %d.%m.%Y")))
 			self.adressLabel.show()
 			self.loginLabel.show()
 			self.dataLabel.show()
@@ -206,9 +224,11 @@ class DispForm(QtGui.QWidget):
 			self.dateLabel.show()
 			self.nameLabel.show()
 			self.nameHint.show()
+			self.openListButton.show()
 		except:
-			pass
-
+		
+			self.dataErrorHint.show()
+			self.dataErrorHint.setText(u'Нет данных, удовлетворяющих запрос')
 
 #.########.##.....##.########..########.##....##.....########..########..#######..##.....##.########..######..########
 #.##.......###...###.##.....##....##.....##..##......##.....##.##.......##.....##.##.....##.##.......##....##....##...
@@ -275,7 +295,8 @@ class RequestForm(QtGui.QWidget):
 	def accept(self):
 		createUser = models.User.create(name=self.name, sername=self.sername, login=self.login, password=self.password, role='user')
 		record = models.Record.create(data=random.randint(0,99999))
-		models.Meter.create(adress=self.adress, firm=self.firm, model=self.model, met_id=self.met_id, user=createUser, record=record)
+		meter = models.Meter.create(adress=self.adress, firm=self.firm, model=self.model, met_id=self.met_id, user=createUser, record=record)
+		models.RecordInMeter.create(record=record, meter=meter)
 		models.Add.update(status=True).where(models.Add.id==self.rec.id).execute()
 		self.action.emit()
 		self.close()
@@ -438,6 +459,7 @@ class UserForm(QtGui.QWidget):
 		#events:
 		self.chatButton.clicked.connect(self.openChatUser)
 		self.answerButton.clicked.connect(self.openAnswer)
+		self.openListButton.clicked.connect(self.openList)
 
 	def initUI(self):
 		uic.loadUi("ui/userform.ui", self)
@@ -446,8 +468,8 @@ class UserForm(QtGui.QWidget):
 		self.setWindowTitle(u'Пользователь ' + self.user.name + ' ' + self.user.sername)
 
 	def openAnswer(self):
-		answer = models.Chat.select().where((models.Chat.answer != 0) & (models.Chat.user == self.user.id))
-		if answer.count():
+		self.answer = models.Chat.select().where((models.Chat.answer != '') & (models.Chat.user == self.user.id))
+		if self.answer.count():
 			self.f = SelectIt(answer, flag='answer')
 		else:
 			self.f = EmptyRequestForm()
@@ -457,11 +479,24 @@ class UserForm(QtGui.QWidget):
 		self.f = ChatUserForm(self.user)
 		self.f.show()
 
+
+	def openList(self):
+		self.records_list = QtGui.QListWidget()
+		self.records_list.show()
+		self.records_list.setGeometry(40, 120, 271, 251)
+		centerOnScreen(self.records_list)
+		self.records_list.setWindowTitle(u'Журнал')
+		meter = models.Meter.get(models.Meter.user == self.user.id)
+		records = models.RecordInMeter.select().where(models.RecordInMeter.meter == meter)
+		for record in records:
+			self.records_list.addItem(u'Показания: %s (%s)'%(record.record.data, record.record.date.__format__("%H:%M %d.%m.%Y")))
+
 	def met(self):
 		try:
-			mets = list(models.Meter.select().where(models.Meter.user == self.user.id))
-			self.dataLCD.display(mets[-1].record.data)
-			self.timeLabel.setText(str(mets[-1].record.date.__format__("%H:%M %d.%m.%Y")))
+			meter = models.Meter.get(models.Meter.user == self.user.id)
+			records = list(models.RecordInMeter.select().where(models.RecordInMeter.meter == meter))
+			self.dataLCD.display(records[-1].record.data)
+			self.timeLabel.setText(str(records[-1].record.date.__format__("%H:%M %d.%m.%Y")))
 		except:
 			print u'Показаний нет'
 
