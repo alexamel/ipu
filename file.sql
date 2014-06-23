@@ -45,7 +45,7 @@ CREATE TABLE `add` (
 
 LOCK TABLES `add` WRITE;
 /*!40000 ALTER TABLE `add` DISABLE KEYS */;
-INSERT INTO `add` VALUES (1,'Хочу быть с Вами.','Семен','Шишкин','sema',12,'Тушино, ул.Восьмого Вагона 12',' Рост','12м','13м',0,'2014-06-23');
+INSERT INTO `add` VALUES (1,'Хочу быть с Вами.','Семен','Шишкин','sema',12,'Тушино, ул.Восьмого Вагона 12',' Рост','12м','13м',1,'2014-06-23');
 /*!40000 ALTER TABLE `add` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +98,7 @@ CREATE TABLE `meter` (
   KEY `meter_user_id` (`user_id`),
   CONSTRAINT `meter_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `meter_ibfk_2` FOREIGN KEY (`record_id`) REFERENCES `record` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `meter` (
 
 LOCK TABLES `meter` WRITE;
 /*!40000 ALTER TABLE `meter` DISABLE KEYS */;
-INSERT INTO `meter` VALUES (3,2,'Москва, Тверская 21','Сенхайзер','34g','12met123',2);
+INSERT INTO `meter` VALUES (3,2,'Москва, Тверская 21','Сенхайзер','34g','12met123',2),(4,3,'Тушино, ул.Восьмого Вагона 12',' Рост','12м','13м',NULL);
 /*!40000 ALTER TABLE `meter` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +123,7 @@ CREATE TABLE `record` (
   `data` int(11) NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,8 +132,37 @@ CREATE TABLE `record` (
 
 LOCK TABLES `record` WRITE;
 /*!40000 ALTER TABLE `record` DISABLE KEYS */;
-INSERT INTO `record` VALUES (1,3433,'2014-06-23 11:30:20'),(2,234,'2014-06-23 19:29:40');
+INSERT INTO `record` VALUES (1,3433,'2014-06-23 11:30:20'),(2,234,'2014-06-23 19:29:40'),(5,42174,'2014-06-23 21:00:50');
 /*!40000 ALTER TABLE `record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `recordinmeter`
+--
+
+DROP TABLE IF EXISTS `recordinmeter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `recordinmeter` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `meter_id` int(11) NOT NULL,
+  `record_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `recordinmeter_record_id` (`record_id`),
+  KEY `recordinmeter_meter_id` (`meter_id`),
+  CONSTRAINT `recordinmeter_ibfk_1` FOREIGN KEY (`meter_id`) REFERENCES `meter` (`id`),
+  CONSTRAINT `recordinmeter_ibfk_2` FOREIGN KEY (`record_id`) REFERENCES `record` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recordinmeter`
+--
+
+LOCK TABLES `recordinmeter` WRITE;
+/*!40000 ALTER TABLE `recordinmeter` DISABLE KEYS */;
+INSERT INTO `recordinmeter` VALUES (1,4,5),(2,4,1),(3,3,5);
+/*!40000 ALTER TABLE `recordinmeter` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -151,7 +180,7 @@ CREATE TABLE `user` (
   `sername` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +189,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'11',1,'Иван','Ивановушкин','disp'),(2,'22',2,'Андрей','Дибрович','user');
+INSERT INTO `user` VALUES (1,'11',1,'Иван','Ивановушкин','disp'),(2,'22',2,'Андрей','Дибрович','user'),(3,'sema',12,'Семен','Шишкин','user');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -173,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-23 18:35:17
+-- Dump completed on 2014-06-23 22:03:52
