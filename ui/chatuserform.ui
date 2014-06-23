@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>chatUserForm</class>
+ <widget class="QWidget" name="chatUserForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>358</width>
+    <height>446</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Претензия</string>
+  </property>
+  <widget class="QPushButton" name="sendButton">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>380</y>
+     <width>271</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Отправить</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="messageTextbox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>120</y>
+     <width>271</width>
+     <height>251</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="choiceBox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>271</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Выберите</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Нет электроэнергии</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Несовпадение показаний</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="commentHint">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>100</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ваш комментарий:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="metTextbox">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>60</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>На счетчике</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="progTextbox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>60</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="placeholderText">
+    <string>В программе</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
