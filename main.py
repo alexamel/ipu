@@ -470,7 +470,7 @@ class UserForm(QtGui.QWidget):
 	def openAnswer(self):
 		self.answer = models.Chat.select().where((models.Chat.answer != '') & (models.Chat.user == self.user.id))
 		if self.answer.count():
-			self.f = SelectIt(answer, flag='answer')
+			self.f = SelectIt(self.answer, flag='answer')
 		else:
 			self.f = EmptyRequestForm()
 		self.f.show()
